@@ -1,0 +1,9 @@
+sentence-transformers
+streamlit
+plotly
+streamlit plotly
+google-generativeai
+google-adk
+tensorflow
+python-dotenv
+tf-keras
