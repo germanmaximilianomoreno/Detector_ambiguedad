@@ -2,12 +2,12 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 import asyncio
-from agente_raiz import Main
+from coordinador import Coordinador
 
 def analizar_requerimiento(requerimiento):
     try:
-        agente_raiz = Main()
-        respuesta = asyncio.run(agente_raiz.procesar_requerimiento(requerimiento))
+        modulo_coordinador = Coordinador()
+        respuesta = asyncio.run(modulo_coordinador.procesar_requerimiento(requerimiento))
         if respuesta is None:
             # Retornar dict por defecto si la coroutine devuelve None
             return {
@@ -87,6 +87,3 @@ if st.button("📤 Analizar Requerimiento") and requerimiento_usuario:
         st.plotly_chart(fig, use_container_width=True)
 
         st.write(f"Predicción de ambigüedad: **{respuesta['check_ambiguity']['resultado']}**")
-
-    # Pie de página
-    st.info("Agente detector de ambigüedad iniciado")

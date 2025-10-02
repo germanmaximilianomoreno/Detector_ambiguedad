@@ -14,7 +14,7 @@ from google.adk.agents import Agent
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
-class Agente_reescritura:
+class Reformulación_requerimiento:
     def __init__(self, USER_ID="user_1", SESSION_ID="session_001"):
         load_dotenv()  # carga las variables del .env
         os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
@@ -54,7 +54,6 @@ class Agente_reescritura:
         )
 
         print(f"✅ Runner listo para agente '{self.agente_reformulador.name}'.")
-
 
     async def realizar_reescritura(self, requerimiento):
             try:

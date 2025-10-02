@@ -1,21 +1,14 @@
-from agente_detector_ambiguedad import Agente_detector_ambiguedad
-from agente_reescritura import Agente_reescritura
+from clasificador_ambiguedad import Clasificador_ambiguedad
+from reformulación_requerimiento import Reformulación_requerimiento
 
-class Main:
+class Coordinador:
     def __init__(self):
-        # Inicializar agentes una sola vez
-        self.agente_ambiguo = Agente_detector_ambiguedad()
-        self.agente_reescritura = Agente_reescritura()
-    
-    def check_ambiguity(self, requerimiento):
-        try:
-            return self.agente_ambiguo.ejecutar(requerimiento)
-        except Exception as e:
-            return {"resultado": "Error", "pred_prob": 0, "requerimiento": requerimiento, "mensaje": str(e)}
+        self.clasificador = Clasificador_ambiguedad()
+        self.reformulador = Reformulación_requerimiento()
     
     async def procesar_requerimiento(self, requerimiento):
         try:
-            res_ambiguedad = self.check_ambiguity(requerimiento)
+            res_ambiguedad = self.clasificador.analizar_ambiguedad(requerimiento)
 
             # Si no es ambiguo
             if res_ambiguedad.get("resultado") != "Ambiguo":
@@ -24,7 +17,7 @@ class Main:
                     "reformulacion": f"El requerimiento '{res_ambiguedad.get('requerimiento', requerimiento)}' es no ambiguo"
                 }
             else:
-                final_response = await self.agente_reescritura.realizar_reescritura(requerimiento)
+                final_response = await self.reformulador.realizar_reescritura(requerimiento)
                 return {
                     "check_ambiguity": res_ambiguedad,
                     "reformulacion": final_response
