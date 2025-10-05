@@ -1,7 +1,6 @@
 sentence-transformers
 streamlit
 plotly
-streamlit plotly
 google-generativeai
 google-adk
 tensorflow
