@@ -53,7 +53,7 @@ class Reformulación_requerimiento:
             session_service=self.session_service
         )
 
-        print(f"✅ Runner listo para agente '{self.agente_reformulador.name}'.")
+        print(f" Runner listo para agente '{self.agente_reformulador.name}'.")
 
     async def realizar_reescritura(self, requerimiento):
             try:

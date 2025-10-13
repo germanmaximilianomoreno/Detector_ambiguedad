@@ -1,0 +1,66 @@
+/* Fondo y tipografía general */
+body {
+    background-color: #fafafa;
+    color: #222;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Centrar el contenido principal */
+.block-container {
+    max-width: 950px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Estilo del área de texto */
+.stTextArea textarea {
+    background-color: #ffffff;
+    color: #111;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Botón moderno */
+div.stButton > button {
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    height: 3em;
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+div.stButton > button:hover {
+    background-color: #0056b3;
+    transform: scale(1.02);
+}
+
+/* Subtítulos */
+h3, h2 {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Caja de resultado */
+.result-box {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Reformulación */
+.reformulacion {
+    font-size: 15px;
+    color: #444;
+    background-color: #f9f9f9;
+    border-left: 4px solid #007bff;
+    padding: 10px 15px;
+    border-radius: 6px;
+}

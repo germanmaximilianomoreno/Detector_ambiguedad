@@ -6,3 +6,5 @@ __pycache__/
 # Modelos
 modelo_embeddings/
 modelo_nn_requerimientos/
+modelo_embeddings_1053_intfloat_multilingual-e5-large_zip/
+modelo_nn_requerimientos_1053_intfloat_multilingual-e5-large/

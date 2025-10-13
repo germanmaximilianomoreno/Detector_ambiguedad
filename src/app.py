@@ -3,26 +3,26 @@ import numpy as np
 import plotly.graph_objects as go
 import asyncio
 from coordinador import Coordinador
+import os
+
+# ---------------- FUNCIONES PRINCIPALES ---------------- #
 
 def analizar_requerimiento(requerimiento):
     try:
         modulo_coordinador = Coordinador()
         respuesta = asyncio.run(modulo_coordinador.procesar_requerimiento(requerimiento))
         if respuesta is None:
-            # Retornar dict por defecto si la coroutine devuelve None
             return {
                 "check_ambiguity": {"resultado": "Error", "pred_prob": 0, "requerimiento": requerimiento},
                 "reformulacion": "No se pudo procesar el requerimiento."
             }
         return respuesta
     except Exception as e:
-        # Captura cualquier excepción y devuelve un dict válido
         return {
             "check_ambiguity": {"resultado": "Error", "pred_prob": 0, "requerimiento": requerimiento, "mensaje": str(e)},
             "reformulacion": f"No se pudo procesar el requerimiento debido a un error: {e}"
         }
 
-# Función recursiva para convertir todos los tipos no serializables
 def convertir_objeto(obj):
     if isinstance(obj, dict):
         return {k: convertir_objeto(v) for k, v in obj.items()}
@@ -35,55 +35,77 @@ def convertir_objeto(obj):
     else:
         return obj
 
-# Configuración de la página: Wide mode activado
+
+# ---------------- CONFIGURACIÓN DE PÁGINA ---------------- #
+
 st.set_page_config(
     page_title="Detector de Ambigüedad",
-    layout="wide",
-    initial_sidebar_state="auto"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-# Título principal
-st.title("🔍 Detector de Ambigüedad de Requerimientos")
+# ---------------- ESTILO CSS ---------------- #
 
-# Input del usuario
+# Ruta absoluta al archivo CSS (siempre relativa al archivo actual)
+css_path = os.path.join(os.path.dirname(__file__), "style.css")
+
+with open(css_path) as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# ---------------- INTERFAZ ---------------- #
+
+st.markdown("<h2 font-size:1.6rem; font-weight:600; color:#222;'>Detector de Ambigüedad de Requerimientos</h2>", unsafe_allow_html=True)
+
+st.markdown("Analiza tus requerimientos y detecta posibles ambigüedades en su redacción.")
+
 requerimiento_usuario = st.text_area(
-    "✍️ Ingresa tu requerimiento aquí:",
-    placeholder="Ej: El sistema debe ser rápido y seguro"
+    "Ingresa tu requerimiento:",
+    placeholder="Ejemplo: El sistema debe ser rápido y seguro",
+    height=120
 )
 
-# Botón para enviar el requerimiento
-if st.button("📤 Analizar Requerimiento") and requerimiento_usuario:
-    # Llamada a la función de análisis
+if st.button("Analizar Requerimiento") and requerimiento_usuario:
     respuesta = analizar_requerimiento(requerimiento_usuario)
     respuesta_serializable = convertir_objeto(respuesta)
 
-    # Crear dos columnas
-    col1, col2 = st.columns(2)
+    st.markdown("---")
 
-    # -------- Columna 1: Requerimiento y Reformulación --------
+    # Crear dos columnas equilibradas
+    col1, col2 = st.columns([1.2, 0.8])
+
     with col1:
-        st.subheader("📌 Requerimiento original")
-        st.write(respuesta_serializable["check_ambiguity"])
+        st.subheader("Resultado del análisis")
 
-        st.subheader("✏️ Reformulación sugerida")
-        st.markdown(respuesta_serializable["reformulacion"])
+        probabilidad = respuesta_serializable["check_ambiguity"]["pred_prob"]
+        texto = (
+            f"**Requerimiento:** {respuesta_serializable['check_ambiguity']['requerimiento']}  \n"
+            f"**Probabilidad de ambigüedad:** {probabilidad:.2%}  \n"
+            f"**Etiqueta:** {respuesta_serializable['check_ambiguity']['resultado']}"
+        )
+        st.markdown(texto)
 
-    # -------- Columna 2: Probabilidad de ambigüedad --------
+        st.subheader("Reformulación sugerida")
+        st.markdown(f"<div class='reformulacion'>{respuesta_serializable['reformulacion']}</div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
     with col2:
-        st.subheader("📊 Probabilidad de ambigüedad")
-
-        pred_prob = respuesta_serializable["check_ambiguity"]["pred_prob"]  # valor entre 0 y 1
+        st.markdown("<h3 style='text-align:center;'>Probabilidad</h3>", unsafe_allow_html=True)
+        pred_prob = respuesta_serializable["check_ambiguity"]["pred_prob"]
         porcentaje = round(pred_prob * 100, 2)
 
-        # Crear gráfico circular tipo dona
         fig = go.Figure(go.Pie(
             values=[porcentaje, 100-porcentaje],
             labels=[f"Ambiguo {porcentaje}%", f"No ambiguo {100-porcentaje}%"],
-            hole=0.6,
-            marker_colors=["#EF553B", "#00CC96"]
+            hole=0.7,
+            marker_colors=["#FF6B6B", "#A0E7A0"]
         ))
-        fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0))
+        fig.update_layout(
+            showlegend=False,
+            margin=dict(t=10, b=10, l=10, r=10),
+            height=250,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)"
+        )
 
         st.plotly_chart(fig, use_container_width=True)
-
-        st.write(f"Predicción de ambigüedad: **{respuesta['check_ambiguity']['resultado']}**")
